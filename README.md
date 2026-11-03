@@ -34,4 +34,4 @@ codigo,nombre,categoria,precio,existencia
 5. Frontend PHP MVC; 
 6. Documentación de ejecución, OpenAPI y casos de prueba.
 
-Cada etapa se desarrollará en cambios pequeños y comprobables. Todavía no hay servicios ejecutables; las instrucciones de arranque se añadirán con cada componente.
+Cada etapa se desarrollará en cambios pequeños y comprobables. El `pom.xml` de la raíz agrupa los módulos Java del backend en un único proyecto Maven. `mvn package` desde la raíz compila Eureka, catálogo e importaciones. El frontend PHP permanece fuera de Maven. Cada microservicio sigue ejecutándose como proceso independiente.
