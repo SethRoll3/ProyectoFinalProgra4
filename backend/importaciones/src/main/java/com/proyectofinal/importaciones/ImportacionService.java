@@ -1,6 +1,8 @@
 package com.proyectofinal.importaciones;
 
 import java.util.ArrayList;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -8,6 +10,7 @@ import org.springframework.web.server.ResponseStatusException;
 
 @Service
 public class ImportacionService {
+    private static final Logger log = LoggerFactory.getLogger(ImportacionService.class);
     private final CsvService csvService;
     private final CatalogoCliente catalogo;
     private final HistorialService historial;
@@ -39,6 +42,9 @@ public class ImportacionService {
             }
         }
         errores.sort((a, b) -> Integer.compare(a.fila(), b.fila()));
-        return historial.guardar(analisis.archivo(), analisis.filas(), aceptados, errores);
+        ResultadoImportacion resultado = historial.guardar(analisis.archivo(), analisis.filas(), aceptados, errores);
+        log.info("Importación {} completada: archivo={}, aceptados={}, rechazados={}",
+                resultado.id(), resultado.archivo(), resultado.aceptados(), resultado.rechazados());
+        return resultado;
     }
 }

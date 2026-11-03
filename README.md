@@ -31,7 +31,7 @@ codigo,nombre,categoria,precio,existencia
 2. Catálogo: categorías, productos, validaciones y registro por lote.
 3. Importaciones: CSV, llamada al catálogo e historial.
 4. Eureka y Gateway: demostrar las rutas entre servicios.
-5. Frontend PHP MVC; 
+5. Frontend PHP MVC.
 6. Documentación de ejecución, OpenAPI y casos de prueba.
 
-Cada etapa se desarrollará en cambios pequeños y comprobables. El `pom.xml` de la raíz agrupa los módulos Java del backend en un único proyecto Maven. `mvn package` desde la raíz compila Eureka, catálogo e importaciones. El frontend PHP permanece fuera de Maven. Cada microservicio sigue ejecutándose como proceso independiente.
+Cada etapa se desarrollará en cambios pequeños y comprobables. El `pom.xml` de la raíz agrupa los módulos Java del backend en un único proyecto Maven. `mvn package` desde la raíz compila Eureka, catálogo, importaciones y Gateway. El frontend PHP permanece fuera de Maven. Cada microservicio sigue ejecutándose como proceso independiente. Las instrucciones están en `backend/README.md`.

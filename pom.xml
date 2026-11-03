@@ -15,6 +15,7 @@
         <module>backend/eureka</module>
         <module>backend/catalogo</module>
         <module>backend/importaciones</module>
+        <module>backend/gateway</module>
     </modules>
     <properties>
         <java.version>21</java.version>

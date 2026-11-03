@@ -1,13 +1,45 @@
 # Backend
 
-Aquí se desarrollarán `catalogo` e `importaciones` como microservicios Spring Boot. También se añadirán `gateway`, `eureka` y el script de MySQL en `database`.
+El `pom.xml` de la raíz reúne Eureka, catálogo, importaciones y Gateway en un proyecto Maven con JDK 21. `mvn package` desde la raíz compila los cuatro módulos. Cada microservicio se ejecuta en su propio proceso.
 
-Los CSV de ejemplo para importaciones están en `importaciones/csv/`. El primer avance del catálogo está en `catalogo/`.
+## Preparación en Windows
 
-El `pom.xml` de la raíz agrupa los módulos Java. Con JDK 21 y Maven, `mvn package` desde la raíz compila todos los servicios en una sola ejecución de Maven. Crear la base y las tablas con `database/catalogo.sql` y configurar `DB_URL`, `DB_USER` y `DB_PASSWORD` si los valores locales no aplican. Cada servicio mantiene su proceso y puerto propios. Los endpoints del catálogo son `GET /api/categorias`, `GET /api/productos`, `GET /api/productos/{id}`, `POST /api/productos` y `POST /api/productos/lotes`. El listado acepta `page`, `size` y filtros opcionales `codigo`, `nombre` y `categoria`, que se pueden combinar. El alta recibe `codigo`, `nombre`, `categoria`, `precio` y `existencia` en JSON; devuelve 201 si crea el producto, 400 si los datos son inválidos y 409 si el código ya existe. Los rechazos incluyen un campo `error` con el motivo. El alta por lote recibe un arreglo de esos productos y devuelve un resultado por posición con `indice` iniciado en cero, `codigo`, `aceptado`, `productoId` y `error`. El servicio de importaciones podrá convertir cada índice a su número de fila en el CSV.
+1. Instalar JDK 21 y Maven. Si se usa la instalación preparada en esta computadora, JDK está en `C:\Program Files\Java\jdk-21.0.12` y Maven en `C:\Users\Boteo\.codex\tools\apache-maven-3.10.0`.
+2. Encender MySQL en XAMPP. En esta computadora escucha en el puerto `3306`.
+3. En phpMyAdmin, abrir **Importar** y cargar `backend/database/catalogo.sql`. Repetir con `backend/database/importaciones.sql`. Ambos scripts crean sus bases y tablas si no existen.
+4. Abrir PowerShell en la raíz del repositorio y ejecutar:
 
-Importaciones ofrece `POST http://localhost:8082/api/importaciones/validaciones` para comprobar la estructura completa del CSV y `POST http://localhost:8082/api/importaciones/analisis` para separar las filas con formato válido de las que tienen errores. Ambos reciben un formulario multipart con el campo `archivo`. El análisis devuelve el número de cada fila y el motivo de los errores de formato; las reglas de negocio, como códigos duplicados o precios negativos, corresponden al catálogo. Se inicia con JDK 21 y Maven mediante `mvn spring-boot:run` desde `backend/importaciones/`. Todavía no registra productos ni conserva historial; esas funciones se añadirán en los siguientes avances.
+```powershell
+$env:JAVA_HOME = 'C:\Program Files\Java\jdk-21.0.12'
+& 'C:\Users\Boteo\.codex\tools\apache-maven-3.10.0\bin\mvn.cmd' package
+```
 
-Para iniciar el descubrimiento de servicios, ejecutar `mvn spring-boot:run` desde `backend/eureka/` antes de iniciar catálogo e importaciones. El panel de Eureka está en `http://localhost:8761/` y debe mostrar `CATALOGO` e `IMPORTACIONES` cuando ambos estén activos. Eureka registra sus direcciones; todavía falta que importaciones envíe productos al catálogo mediante ese registro. También faltan Gateway, historial y las demás piezas del backend.
+Si JDK o Maven están instalados en otra ruta, ajustar esas rutas. El catálogo usa `DB_URL`, `DB_USER` y `DB_PASSWORD`; importaciones usa `IMPORTACIONES_DB_URL`, `DB_USER` y `DB_PASSWORD`. Los valores predeterminados apuntan a `localhost:3306` con usuario `root` y contraseña vacía.
 
-El catálogo publica su especificación OpenAPI en `http://localhost:8081/v3/api-docs` y la interfaz Swagger en `http://localhost:8081/swagger-ui/index.html`. Los eventos de creación y rechazo aparecen en la salida de consola mediante Logback.
+## Ejecución
+
+Después de compilar, iniciar los JAR en este orden, cada uno en su propia ventana de PowerShell:
+
+| Servicio | Comando desde la raíz | Puerto |
+| --- | --- | --- |
+| Eureka | `java -jar backend/eureka/target/eureka-0.1.0.jar` | 8761 |
+| Catálogo | `java -jar backend/catalogo/target/catalogo-0.1.0.jar` | 8081 |
+| Importaciones | `java -jar backend/importaciones/target/importaciones-0.1.0.jar` | 8082 |
+| Gateway | `java -jar backend/gateway/target/gateway-0.1.0.jar` | 8080 |
+
+En cada ventana debe estar seleccionado JDK 21. Se puede usar `& 'C:\Program Files\Java\jdk-21.0.12\bin\java.exe'` en lugar de `java` si el comando global utiliza otra versión. `Ctrl+C` detiene el servicio de esa ventana. El panel `http://localhost:8761/` muestra los servicios registrados.
+
+## API
+
+PHP debe llamar a Gateway en `http://localhost:8080`, que localiza los servicios mediante Eureka. Gateway conserva las rutas originales:
+
+| Ruta | Servicio |
+| --- | --- |
+| `/api/categorias` y `/api/productos/**` | Catálogo |
+| `/api/importaciones/**` | Importaciones |
+
+Catálogo ofrece consulta de categorías, búsqueda y paginación de productos, detalle y altas individuales o por lote. Importaciones ofrece `POST /api/importaciones` con formulario multipart y campo `archivo`, `GET /api/importaciones` para el historial paginado y `GET /api/importaciones/{id}` para el resumen y los errores. `POST /api/importaciones/validaciones` comprueba la estructura del CSV y `POST /api/importaciones/analisis` muestra las filas interpretadas sin registrar productos.
+
+Los CSV deben ser UTF-8, separados por comas y comenzar exactamente con `codigo,nombre,categoria,precio,existencia`. Hay ejemplos en `backend/importaciones/csv/`. Importaciones separa los errores de formato, envía el resto al catálogo por HTTP usando Eureka y guarda el resumen y los rechazos en la base `importaciones`. Solo catálogo modifica sus tablas de productos.
+
+Swagger está disponible en `http://localhost:8081/swagger-ui/index.html` para catálogo y `http://localhost:8082/swagger-ui/index.html` para importaciones. Sus especificaciones JSON están en `/v3/api-docs` de cada servicio. Ambos servicios registran eventos en consola mediante Logback.
