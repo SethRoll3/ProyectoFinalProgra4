@@ -10,10 +10,12 @@ import org.springframework.web.server.ResponseStatusException;
 public class ImportacionService {
     private final CsvService csvService;
     private final CatalogoCliente catalogo;
+    private final HistorialService historial;
 
-    public ImportacionService(CsvService csvService, CatalogoCliente catalogo) {
+    public ImportacionService(CsvService csvService, CatalogoCliente catalogo, HistorialService historial) {
         this.csvService = csvService;
         this.catalogo = catalogo;
+        this.historial = historial;
     }
 
     public ResultadoImportacion importar(MultipartFile archivo) {
@@ -37,6 +39,6 @@ public class ImportacionService {
             }
         }
         errores.sort((a, b) -> Integer.compare(a.fila(), b.fila()));
-        return new ResultadoImportacion(analisis.archivo(), analisis.filas(), aceptados, errores.size(), errores);
+        return historial.guardar(analisis.archivo(), analisis.filas(), aceptados, errores);
     }
 }
