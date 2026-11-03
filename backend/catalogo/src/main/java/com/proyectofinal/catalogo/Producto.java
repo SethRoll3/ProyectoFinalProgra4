@@ -17,6 +17,17 @@ public class Producto {
     private BigDecimal precio;
     private Integer existencia;
 
+    protected Producto() {
+    }
+
+    public Producto(String codigo, String nombre, String categoria, BigDecimal precio, Integer existencia) {
+        this.codigo = codigo;
+        this.nombre = nombre;
+        this.categoria = categoria;
+        this.precio = precio;
+        this.existencia = existencia;
+    }
+
     public Long getId() { return id; }
     public String getCodigo() { return codigo; }
     public String getNombre() { return nombre; }
