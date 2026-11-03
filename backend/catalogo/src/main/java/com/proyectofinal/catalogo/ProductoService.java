@@ -3,6 +3,8 @@ package com.proyectofinal.catalogo;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -10,6 +12,7 @@ import org.springframework.web.server.ResponseStatusException;
 
 @Service
 public class ProductoService {
+    private static final Logger log = LoggerFactory.getLogger(ProductoService.class);
     private final ProductoRepository productos;
     private final CategoriaRepository categorias;
 
@@ -40,7 +43,9 @@ public class ProductoService {
         }
 
         try {
-            return productos.saveAndFlush(new Producto(codigo, nombre, categoria, datos.precio(), datos.existencia()));
+            Producto producto = productos.saveAndFlush(new Producto(codigo, nombre, categoria, datos.precio(), datos.existencia()));
+            log.info("Producto creado: código={}, id={}", producto.getCodigo(), producto.getId());
+            return producto;
         } catch (DataIntegrityViolationException error) {
             throw new ResponseStatusException(HttpStatus.CONFLICT, "El código ya existe", error);
         }
@@ -59,6 +64,7 @@ public class ProductoService {
                 Producto producto = crear(entrada);
                 resultados.add(new ResultadoProducto(indice, producto.getCodigo(), true, producto.getId(), null));
             } catch (ResponseStatusException error) {
+                log.warn("Producto rechazado en posición {}: código={}, motivo={}", indice, codigo, error.getReason());
                 resultados.add(new ResultadoProducto(indice, codigo, false, null, error.getReason()));
             }
         }
