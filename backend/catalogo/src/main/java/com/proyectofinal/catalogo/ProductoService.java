@@ -1,6 +1,8 @@
 package com.proyectofinal.catalogo;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.List;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -42,6 +44,25 @@ public class ProductoService {
         } catch (DataIntegrityViolationException error) {
             throw new ResponseStatusException(HttpStatus.CONFLICT, "El código ya existe", error);
         }
+    }
+
+    public List<ResultadoProducto> crearLote(List<ProductoNuevo> datos) {
+        if (datos == null || datos.isEmpty()) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "El lote debe contener productos");
+        }
+
+        List<ResultadoProducto> resultados = new ArrayList<>();
+        for (int indice = 0; indice < datos.size(); indice++) {
+            ProductoNuevo entrada = datos.get(indice);
+            String codigo = entrada == null ? null : entrada.codigo();
+            try {
+                Producto producto = crear(entrada);
+                resultados.add(new ResultadoProducto(indice, producto.getCodigo(), true, producto.getId(), null));
+            } catch (ResponseStatusException error) {
+                resultados.add(new ResultadoProducto(indice, codigo, false, null, error.getReason()));
+            }
+        }
+        return resultados;
     }
 
     private boolean vacio(String valor) {

@@ -1,5 +1,6 @@
 package com.proyectofinal.catalogo;
 
+import java.util.List;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
@@ -30,5 +31,10 @@ public class ProductoController {
     @ResponseStatus(HttpStatus.CREATED)
     public Producto crear(@RequestBody ProductoNuevo datos) {
         return service.crear(datos);
+    }
+
+    @PostMapping("/lotes")
+    public List<ResultadoProducto> crearLote(@RequestBody List<ProductoNuevo> datos) {
+        return service.crearLote(datos);
     }
 }
