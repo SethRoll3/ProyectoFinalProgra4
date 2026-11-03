@@ -6,13 +6,12 @@ Proyecto de práctica basado en la especificación de Programación IV. Permitir
 
 | Carpeta | Responsabilidad |
 | --- | --- |
-| `catalogo/` | Spring Boot: productos y categorías; administra sus tablas MySQL. |
-| `importaciones/` | Spring Boot: recibe CSV, coordina el registro y guarda historial y errores. |
-| `eureka/` | Registro y descubrimiento de servicios. |
-| `gateway/` | Entrada HTTP para el frontend. |
+| `backend/catalogo/` | Spring Boot: productos y categorías; administra sus tablas MySQL. |
+| `backend/importaciones/` | Spring Boot: recibe CSV, coordina el registro y guarda historial y errores. |
+| `backend/eureka/` | Registro y descubrimiento de servicios. |
+| `backend/gateway/` | Entrada HTTP para el frontend. |
+| `backend/database/` | Script de creación de bases de datos. |
 | `frontend/` | PHP MVC; consume el backend mediante Gateway. |
-| `database/` | Script de creación de bases de datos. |
-| `csv/` | Archivos de ejemplo. |
 
 Cada servicio administrará sus propias tablas. Importaciones enviará productos al catálogo por HTTP, localizándolo mediante Eureka. El catálogo responderá por producto si fue aceptado o rechazado y por qué. PHP no accederá directamente a MySQL.
 
@@ -24,7 +23,7 @@ UTF-8, separador coma y encabezados en este orden exacto:
 codigo,nombre,categoria,precio,existencia
 ```
 
-`codigo`, `nombre` y `categoria` son obligatorios; `precio` debe ser mayor que cero y `existencia` un entero no negativo. Los errores conservarán el número de fila. Hay ejemplos en `csv/`.
+`codigo`, `nombre` y `categoria` son obligatorios; `precio` debe ser mayor que cero y `existencia` un entero no negativo. Los errores conservarán el número de fila. Hay ejemplos en `backend/importaciones/csv/`.
 
 ## Avance progresivo
 
