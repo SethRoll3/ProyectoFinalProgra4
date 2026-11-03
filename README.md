@@ -1,6 +1,6 @@
 # Gestión de importación de productos
 
-Proyecto de práctica basado en la especificación de Programación IV. Permitirá cargar productos desde CSV, revisar cada importación y consultar el catálogo.
+Proyecto basado en la especificación de Programación IV. Permitirá cargar productos desde CSV, revisar cada importación y consultar el catálogo.
 
 ## Componentes previstos
 
@@ -31,7 +31,7 @@ codigo,nombre,categoria,precio,existencia
 2. Catálogo: categorías, productos, validaciones y registro por lote.
 3. Importaciones: CSV, llamada al catálogo e historial.
 4. Eureka y Gateway: demostrar las rutas entre servicios.
-5. Frontend PHP MVC; acordar después el diseño visual.
+5. Frontend PHP MVC; 
 6. Documentación de ejecución, OpenAPI y casos de prueba.
 
 Cada etapa se desarrollará en cambios pequeños y comprobables. Todavía no hay servicios ejecutables; las instrucciones de arranque se añadirán con cada componente.
