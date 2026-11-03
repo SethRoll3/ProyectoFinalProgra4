@@ -1,0 +1,11 @@
+CREATE DATABASE IF NOT EXISTS catalogo CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+USE catalogo;
+
+CREATE TABLE IF NOT EXISTS producto (
+    id BIGINT NOT NULL AUTO_INCREMENT PRIMARY KEY,
+    codigo VARCHAR(255) NOT NULL UNIQUE,
+    nombre VARCHAR(255) NOT NULL,
+    categoria VARCHAR(255) NOT NULL,
+    precio DECIMAL(38, 2) NOT NULL,
+    existencia INT NOT NULL
+);
