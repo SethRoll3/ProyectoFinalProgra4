@@ -14,7 +14,11 @@ final class GatewayClient
     {
         $url = $this->baseUrl . $path;
         if ($query !== []) {
-            $url .= '?' . http_build_query($query);
+            $parameters = [];
+            foreach ($query as $name => $value) {
+                $parameters[] = rawurlencode((string) $name) . '=' . rawurlencode((string) $value);
+            }
+            $url .= '?' . implode('&', $parameters);
         }
         return $this->request($url);
     }

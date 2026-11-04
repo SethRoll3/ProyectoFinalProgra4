@@ -1,6 +1,6 @@
 <div class="page-intro"><div><span class="eyebrow">VISTA GENERAL</span><h1>Todo en orden,<br>en un solo lugar.</h1><p>Consulta tus productos y sigue cada archivo desde su llegada hasta el resultado.</p></div><a class="button button-primary" href="?page=cargar">Nueva importación <span aria-hidden="true">↗</span></a></div>
 <?php if (isset($error)): ?>
-    <p role="alert"><?= e($error) ?></p>
+    <p class="alert" role="alert"><?= e($error) ?></p>
 <?php endif; ?>
 <section class="metrics" aria-label="Indicadores generales">
     <div class="metric-card"><span class="metric-label">PRODUCTOS EN CATÁLOGO</span><strong><?= $productCount === null ? '—' : e($productCount) ?></strong><span class="metric-caption">Disponibles para consulta <span aria-hidden="true">↗</span></span></div>
