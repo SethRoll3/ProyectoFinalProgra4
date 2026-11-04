@@ -4,11 +4,12 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title><?= e($title ?? 'Gestión de productos') ?> | Gestión de productos</title>
+    <link rel="icon" type="image/svg+xml" href="/assets/mark.svg">
     <link rel="stylesheet" href="/assets/styles.css">
 </head>
 <body>
     <header class="sidebar">
-        <div class="brand"><span class="brand-mark">GP</span><span>GESTIÓN<br><strong>DE PRODUCTOS</strong></span></div>
+        <div class="brand"><img class="brand-mark" src="/assets/mark.svg" alt="" width="43" height="43"><span>GESTIÓN<br><strong>DE PRODUCTOS</strong></span></div>
         <p class="sidebar-caption">Panel de control</p>
         <nav aria-label="Navegación principal">
             <a href="?page=inicio" <?= ($page ?? '') === 'inicio' ? 'aria-current="page"' : '' ?>>Resumen</a>
