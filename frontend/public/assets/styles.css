@@ -130,8 +130,8 @@ input[type="file"]::file-selector-button { margin-right: 10px; padding: 9px 12px
 .field input:focus, .field select:focus { border-color: var(--orange); }
 .filter-actions { display: flex; align-items: center; gap: 16px; padding-bottom: 5px; }
 .pagination { display: flex; align-items: center; justify-content: center; gap: 18px; margin: 24px 0; font-size: 13px; color: var(--muted); }
-.pagination a { padding: 8px 13px; border: 1px solid var(--line); border-radius: 7px; background: #fff; color: #294333; font-weight: 700; text-decoration: none; }
-.pagination a:hover { border-color: var(--orange); }
+.pagination a, .pagination button { padding: 8px 13px; border: 1px solid var(--line); border-radius: 7px; background: #fff; color: #294333; font-weight: 700; text-decoration: none; cursor: pointer; }
+.pagination a:hover, .pagination button:hover { border-color: var(--orange); }
 .result-summary, .detail-list { display: flex; flex-wrap: wrap; gap: 0; }
 .result-summary dt, .detail-list dt { width: 28%; padding: 13px 10px; border-bottom: 1px solid var(--line); color: var(--muted); font-size: 12px; }
 .result-summary dd, .detail-list dd { width: 72%; margin: 0; padding: 13px 10px; border-bottom: 1px solid var(--line); font-weight: 700; overflow-wrap: anywhere; }

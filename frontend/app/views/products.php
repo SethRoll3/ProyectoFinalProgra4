@@ -36,13 +36,17 @@
 <?php endif; ?>
 <?php $totalPages = (int) ($products['totalPages'] ?? 0); ?>
 <?php if ($totalPages > 1): ?>
-    <nav class="pagination" aria-label="Páginas de productos">
+    <form class="pagination" method="get" aria-label="Páginas de productos">
+        <input type="hidden" name="page" value="productos">
+        <input type="hidden" name="codigo" value="<?= e($filters['codigo']) ?>">
+        <input type="hidden" name="nombre" value="<?= e($filters['nombre']) ?>">
+        <input type="hidden" name="categoria" value="<?= e($filters['categoria']) ?>">
         <?php if ($currentPage > 1): ?>
-            <a href="?<?= e(http_build_query(['page' => 'productos'] + $filters + ['p' => $currentPage - 1])) ?>">Anterior</a>
+            <button type="submit" name="p" value="<?= e($currentPage - 1) ?>">Anterior</button>
         <?php endif; ?>
         <span>Página <?= e($currentPage) ?> de <?= e($totalPages) ?></span>
         <?php if ($currentPage < $totalPages): ?>
-            <a href="?<?= e(http_build_query(['page' => 'productos'] + $filters + ['p' => $currentPage + 1])) ?>">Siguiente</a>
+            <button type="submit" name="p" value="<?= e($currentPage + 1) ?>">Siguiente</button>
         <?php endif; ?>
-    </nav>
+    </form>
 <?php endif; ?>
