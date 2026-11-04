@@ -1,3 +1,1 @@
-<h1><?= e($title) ?></h1>
-<p><?= e($error ?? 'Comprueba la dirección o vuelve al resumen.') ?></p>
-<p><a href="?page=inicio">Ir al resumen</a></p>
+<div class="panel empty-state"><span class="eyebrow">NO DISPONIBLE</span><h1><?= e($title) ?></h1><p><?= e($error ?? 'Comprueba la dirección o vuelve al resumen.') ?></p><p><a class="button button-primary" href="?page=inicio">Ir al resumen →</a></p></div>

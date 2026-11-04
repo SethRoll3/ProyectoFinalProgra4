@@ -10,3 +10,15 @@ function flash(string $type, string $message): void
 {
     $_SESSION['flash'] = ['type' => $type, 'message' => $message];
 }
+
+function displayDate(mixed $value): string
+{
+    if ($value === null || $value === '') {
+        return '';
+    }
+    try {
+        return (new DateTimeImmutable((string) $value))->format('d/m/Y · H:i');
+    } catch (Exception) {
+        return (string) $value;
+    }
+}
