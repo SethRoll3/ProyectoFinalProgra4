@@ -1,6 +1,6 @@
 <div class="page-intro"><div><span class="eyebrow">TRAZABILIDAD</span><h1>Historial.</h1><p>Cada archivo conserva su fecha, balance y detalle de errores.</p></div><a class="button button-primary" href="?page=cargar">Nueva importación <span aria-hidden="true">↗</span></a></div>
 <?php if (isset($error)): ?>
-    <p role="alert"><?= e($error) ?></p>
+    <p class="alert" role="alert"><?= e($error) ?></p>
 <?php endif; ?>
 <?php if (empty($history['content'])): ?>
     <p class="empty-state panel">Aún no hay importaciones para mostrar.</p>

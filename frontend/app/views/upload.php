@@ -4,8 +4,8 @@
         <div class="section-head"><div><span class="eyebrow">PASO 01 / 01</span><h2>Selecciona tu archivo</h2></div><span class="file-pill">CSV · UTF-8</span></div>
         <form class="upload-form" method="post" action="?page=cargar" enctype="multipart/form-data">
             <input type="hidden" name="csrf" value="<?= e($_SESSION['csrf']) ?>">
-            <label class="file-drop" for="archivo"><span class="file-drop-icon" aria-hidden="true">↑</span><strong>Elige un archivo CSV</strong><span>Máximo 5 MB · separado por comas</span></label>
-            <input id="archivo" name="archivo" type="file" accept=".csv,text/csv" required>
+            <label class="file-drop" for="archivo"><span class="file-drop-icon" aria-hidden="true">↑</span><strong>Elige un archivo CSV</strong><span class="file-hint">Máximo 5 MB · separado por comas</span></label>
+            <input class="file-input" id="archivo" name="archivo" type="file" accept=".csv,text/csv" required>
             <button class="button button-primary submit-button" type="submit">Importar productos <span aria-hidden="true">→</span></button>
             <div class="import-progress" role="status" aria-label="Procesando importación">
                 <?php require __DIR__ . '/truck.php'; ?>

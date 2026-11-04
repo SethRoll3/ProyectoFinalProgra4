@@ -1,6 +1,6 @@
 <div class="page-intro"><div><span class="eyebrow">CATÁLOGO ACTIVO</span><h1>Productos.</h1><p>Encuentra cada producto por código, nombre o categoría.</p></div><a class="button button-primary" href="?page=cargar">Añadir con CSV <span aria-hidden="true">↗</span></a></div>
 <?php if (isset($error)): ?>
-    <p role="alert"><?= e($error) ?></p>
+    <p class="alert" role="alert"><?= e($error) ?></p>
 <?php endif; ?>
 <form class="filter-bar panel" method="get">
     <input type="hidden" name="page" value="productos">

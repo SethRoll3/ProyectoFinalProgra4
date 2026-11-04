@@ -4,7 +4,7 @@ El punto de entrada es `public/index.php`. Los controladores en `app/` preparan 
 
 El frontend incluye resumen, carga de CSV, resultado, catálogo con filtros y paginación, detalle de producto e historial. El diseño está en `public/assets/styles.css` y usa Flexbox y animaciones CSS, sin JavaScript. Los componentes visuales adaptados de Uiverse y sus créditos están en `THIRD_PARTY_LICENSES.md`.
 
-Durante el envío de un CSV válido se muestra un camión animado mientras el navegador espera la respuesta. Al completar la petición, PHP redirige a la página del resultado. Las animaciones respetan la preferencia de movimiento reducido del sistema.
+Durante el envío de un CSV válido se muestra un camión animado mientras el navegador espera la respuesta. Al completar la petición, PHP redirige a la página del resultado.
 
 ## Ejecutar en Windows
 
