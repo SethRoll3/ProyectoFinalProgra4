@@ -16,6 +16,8 @@ $env:JAVA_HOME = 'C:\Program Files\Java\jdk-21.0.12'
 
 Si JDK o Maven están instalados en otra ruta, ajustar esas rutas. El catálogo usa `DB_URL`, `DB_USER` y `DB_PASSWORD`; importaciones usa `IMPORTACIONES_DB_URL`, `DB_USER` y `DB_PASSWORD`. Los valores predeterminados apuntan a `localhost:3306` con usuario `root` y contraseña vacía.
 
+Catálogo e importaciones se anuncian en Eureka como `localhost` para que Gateway los encuentre en esta computadora. Si se ejecutan en equipos distintos, establecer `EUREKA_INSTANCE_HOSTNAME` en cada servicio con un nombre accesible desde Gateway.
+
 ## Ejecución
 
 Después de compilar, iniciar los JAR en este orden, cada uno en su propia ventana de PowerShell:
