@@ -38,6 +38,9 @@
 <?php if ($totalPages > 1): ?>
     <form class="pagination" method="get" aria-label="Páginas de productos">
         <input type="hidden" name="page" value="productos">
+        <input type="hidden" name="codigo" value="<?= e($filters['codigo']) ?>">
+        <input type="hidden" name="nombre" value="<?= e($filters['nombre']) ?>">
+        <input type="hidden" name="categoria" value="<?= e($filters['categoria']) ?>">
         <?php if ($currentPage > 1): ?>
             <button type="submit" name="p" value="<?= e($currentPage - 1) ?>">Anterior</button>
         <?php endif; ?>
