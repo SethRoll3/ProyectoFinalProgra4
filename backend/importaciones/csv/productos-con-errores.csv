@@ -1,0 +1,5 @@
+codigo,nombre,categoria,precio,existencia
+P004,Webcam,Perifericos,200.00,8
+P004,Webcam repetida,Perifericos,200.00,8
+P005,Precio invalido,Perifericos,-10.00,2
+P006,Existencia invalida,Perifericos,75.00,abc

@@ -1,0 +1,50 @@
+package com.proyectofinal.importaciones;
+
+import java.util.ArrayList;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.http.HttpStatus;
+import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.server.ResponseStatusException;
+
+@Service
+public class ImportacionService {
+    private static final Logger log = LoggerFactory.getLogger(ImportacionService.class);
+    private final CsvService csvService;
+    private final CatalogoCliente catalogo;
+    private final HistorialService historial;
+
+    public ImportacionService(CsvService csvService, CatalogoCliente catalogo, HistorialService historial) {
+        this.csvService = csvService;
+        this.catalogo = catalogo;
+        this.historial = historial;
+    }
+
+    public ResultadoImportacion importar(MultipartFile archivo) {
+        AnalisisCsv analisis = csvService.analizar(archivo);
+        var errores = new ArrayList<>(analisis.errores());
+        int aceptados = 0;
+        if (!analisis.validas().isEmpty()) {
+            var productos = analisis.validas().stream().map(ProductoParaCatalogo::new).toList();
+            var resultados = catalogo.crearLote(productos);
+            for (int i = 0; i < resultados.size(); i++) {
+                ResultadoCatalogo resultado = resultados.get(i);
+                if (resultado.indice() != i) {
+                    throw new ResponseStatusException(HttpStatus.BAD_GATEWAY, "El catálogo devolvió posiciones incorrectas");
+                }
+                if (resultado.aceptado()) {
+                    aceptados++;
+                } else {
+                    FilaProducto fila = analisis.validas().get(i);
+                    errores.add(new ErrorFila(fila.fila(), fila.codigo(), resultado.error()));
+                }
+            }
+        }
+        errores.sort((a, b) -> Integer.compare(a.fila(), b.fila()));
+        ResultadoImportacion resultado = historial.guardar(analisis.archivo(), analisis.filas(), aceptados, errores);
+        log.info("Importación {} completada: archivo={}, aceptados={}, rechazados={}",
+                resultado.id(), resultado.archivo(), resultado.aceptados(), resultado.rechazados());
+        return resultado;
+    }
+}

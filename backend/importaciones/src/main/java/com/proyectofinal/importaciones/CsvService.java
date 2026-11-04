@@ -1,0 +1,101 @@
+package com.proyectofinal.importaciones;
+
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.UncheckedIOException;
+import java.math.BigDecimal;
+import java.nio.charset.CodingErrorAction;
+import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Locale;
+import org.apache.commons.csv.CSVFormat;
+import org.apache.commons.csv.CSVParser;
+import org.apache.commons.csv.CSVRecord;
+import org.springframework.http.HttpStatus;
+import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.server.ResponseStatusException;
+
+@Service
+public class CsvService {
+    private static final List<String> ENCABEZADOS = List.of("codigo", "nombre", "categoria", "precio", "existencia");
+
+    public ValidacionCsv validar(MultipartFile archivo) {
+        List<CSVRecord> filas = leer(archivo);
+        for (int i = 1; i < filas.size(); i++) {
+            if (filas.get(i).size() != ENCABEZADOS.size()) {
+                throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "La fila " + (i + 1) + " debe tener cinco columnas");
+            }
+        }
+        return new ValidacionCsv(archivo.getOriginalFilename(), filas.size() - 1);
+    }
+
+    public AnalisisCsv analizar(MultipartFile archivo) {
+        List<CSVRecord> filas = leer(archivo);
+        List<FilaProducto> validas = new ArrayList<>();
+        List<ErrorFila> errores = new ArrayList<>();
+        for (int i = 1; i < filas.size(); i++) {
+            CSVRecord fila = filas.get(i);
+            int numero = i + 1;
+            String codigo = fila.size() > 0 ? fila.get(0).trim() : "";
+            if (fila.size() != ENCABEZADOS.size()) {
+                errores.add(new ErrorFila(numero, codigo, "La fila debe tener cinco columnas"));
+                continue;
+            }
+            String nombre = fila.get(1).trim();
+            String categoria = fila.get(2).trim();
+            if (codigo.isEmpty() || nombre.isEmpty() || categoria.isEmpty()) {
+                errores.add(new ErrorFila(numero, codigo, "Código, nombre y categoría son obligatorios"));
+                continue;
+            }
+            BigDecimal precio;
+            try {
+                precio = new BigDecimal(fila.get(3).trim());
+            } catch (NumberFormatException error) {
+                errores.add(new ErrorFila(numero, codigo, "El precio debe ser numérico"));
+                continue;
+            }
+            int existencia;
+            try {
+                existencia = Integer.parseInt(fila.get(4).trim());
+            } catch (NumberFormatException error) {
+                errores.add(new ErrorFila(numero, codigo, "La existencia debe ser un entero"));
+                continue;
+            }
+            validas.add(new FilaProducto(numero, codigo, nombre, categoria, precio, existencia));
+        }
+        return new AnalisisCsv(archivo.getOriginalFilename(), filas.size() - 1, validas, errores);
+    }
+
+    private List<CSVRecord> leer(MultipartFile archivo) {
+        if (archivo == null || archivo.isEmpty()) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "El archivo está vacío");
+        }
+
+        String nombre = archivo.getOriginalFilename();
+        if (nombre == null || !nombre.toLowerCase(Locale.ROOT).endsWith(".csv")) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "El archivo debe tener extensión .csv");
+        }
+
+        var decodificador = StandardCharsets.UTF_8.newDecoder()
+                .onMalformedInput(CodingErrorAction.REPORT)
+                .onUnmappableCharacter(CodingErrorAction.REPORT);
+        try (var lector = new InputStreamReader(archivo.getInputStream(), decodificador);
+             CSVParser csv = CSVFormat.DEFAULT.builder().setIgnoreEmptyLines(false).get().parse(lector)) {
+            List<CSVRecord> filas = csv.getRecords();
+            if (filas.isEmpty()) {
+                throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "El archivo está vacío");
+            }
+            if (!filas.getFirst().toList().equals(ENCABEZADOS)) {
+                throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Los encabezados deben ser codigo,nombre,categoria,precio,existencia");
+            }
+            if (filas.size() == 1) {
+                throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "El archivo no contiene productos");
+            }
+            return filas;
+        } catch (IOException | UncheckedIOException error) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "No se pudo leer el CSV en UTF-8", error);
+        }
+    }
+}
